@@ -1,6 +1,9 @@
 return require("packer").startup(function(use)
 	use("wbthomason/packer.nvim")
 
+	use("williamboman/mason.nvim")
+	use("williamboman/mason-lspconfig.nvim")
+
 	use({
 		"rose-pine/neovim",
 		as = "rose-pine",
@@ -74,4 +77,7 @@ return require("packer").startup(function(use)
 			require("telescope").setup({})
 		end,
 	})
+
+	use("neovim/nvim-lspconfig")
+	use("simrat39/rust-tools.nvim")
 end)
