@@ -20,6 +20,7 @@ require("lazy").setup({
 					"ruff",
 					"black",
 					"codelldb",
+					"clang-format",
 				},
 				auto_update = false,
 				run_on_start = true,
@@ -122,6 +123,15 @@ require("lazy").setup({
 					},
 				},
 			})
+
+			local clangd_bin = vim.fn.exepath("clangd")
+			if clangd_bin ~= "" then
+				lspconfig.clangd.setup({
+					capabilities = capabilities,
+					on_attach = on_attach,
+					cmd = { clangd_bin, "--background-index", "--clang-tidy", "--completion-style=detailed" },
+				})
+			end
 		end,
 	},
 
@@ -232,6 +242,8 @@ require("lazy").setup({
 					json = { "prettier" },
 					jsonc = { "prettier" },
 					python = { "ruff_format", "black" },
+					c = { "clang_format" },
+					cpp = { "clang_format" },
 				},
 				format_on_save = { timeout_ms = 500, lsp_fallback = true },
 			})
