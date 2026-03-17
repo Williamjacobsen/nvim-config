@@ -53,8 +53,17 @@ vim.keymap.set("n", "<leader>hl", "<cmd>HopLine<cr>", { desc = "Hop line" })
 vim.keymap.set("n", "<leader>hc", "<cmd>HopChar1<cr>", { desc = "Hop char" })
 
 -- Better vertical movement
-vim.keymap.set("n", "<C-d>", "<C-d>zz")
-vim.keymap.set("n", "<C-u>", "<C-u>zz")
+vim.keymap.set("n", "<C-d>", function()
+	local count = math.floor(vim.api.nvim_win_get_height(0) / 4)
+	vim.cmd("normal! " .. count .. "jzz")
+end, { silent = true })
+vim.keymap.set("n", "<C-u>", function()
+	local count = math.floor(vim.api.nvim_win_get_height(0) / 4)
+	vim.cmd("normal! " .. count .. "kzz")
+end, { silent = true })
+
+-- 9 to end of line
+vim.keymap.set("n", "9", "$")
 
 -- Keep cursor centred when searching
 vim.keymap.set("n", "n", "nzzzv")
