@@ -53,6 +53,32 @@ vim.keymap.set("n", "<leader>hw", "<cmd>HopWord<cr>", { desc = "Hop word" })
 vim.keymap.set("n", "<leader>hl", "<cmd>HopLine<cr>", { desc = "Hop line" })
 vim.keymap.set("n", "<leader>hc", "<cmd>HopChar1<cr>", { desc = "Hop char" })
 
+-- Jump to paren and enter insert mode (works from any position)
+vim.keymap.set("n", "(", function()
+	local line = vim.api.nvim_get_current_line()
+	local col = vim.api.nvim_win_get_cursor(0)[2]
+	local after = line:sub(col + 2)
+	if after:find("%(") then
+		vim.cmd("normal! f(")
+	else
+		vim.cmd("normal! F(")
+	end
+	vim.api.nvim_feedkeys("a", "n", false)
+end, { noremap = true, silent = true })
+vim.keymap.set("n", ")", function()
+	local line = vim.api.nvim_get_current_line()
+	local col = vim.api.nvim_win_get_cursor(0)[2]
+	local after = line:sub(col + 2)
+	if after:find("%)") then
+		vim.cmd("normal! f)")
+	else
+		vim.cmd("normal! F)")
+	end
+	vim.api.nvim_feedkeys("i", "n", false)
+end, { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>hl", "<cmd>HopLine<cr>", { desc = "Hop line" })
+vim.keymap.set("n", "<leader>hc", "<cmd>HopChar1<cr>", { desc = "Hop char" })
+
 -- Better vertical movement
 vim.keymap.set("n", "<C-d>", function()
 	local count = math.floor(vim.api.nvim_win_get_height(0) / 4)
