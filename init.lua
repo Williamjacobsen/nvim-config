@@ -63,6 +63,20 @@ vim.keymap.set("n", "<C-u>", function()
 	vim.cmd("normal! " .. count .. "kzz")
 end, { silent = true })
 
+-- Smart Enter: split {} if on same line, otherwise append ;
+vim.keymap.set("n", "<CR>", function()
+	local line = vim.api.nvim_get_current_line()
+	if line:find("{") and line:find("}") then
+		-- go to }, cut it, open new line below with }, go back up, open middle line
+		vim.cmd("normal! f}x")
+		vim.cmd("normal! o}")
+		vim.cmd("normal! k")
+		vim.api.nvim_feedkeys("o", "n", false)
+	else
+		vim.cmd("normal! A;\\<Esc>")
+	end
+end, { noremap = true, silent = true })
+
 -- 8 to start of line, 9 to end of line
 vim.keymap.set("n", "8", "^")
 vim.keymap.set("n", "9", "$")
