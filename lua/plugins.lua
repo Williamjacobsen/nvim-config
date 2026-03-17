@@ -323,10 +323,23 @@ local lspconfig = require("lspconfig")
 	-- ── Telescope ───────────────────────────────────────────────────────────────
 	{
 		"nvim-telescope/telescope.nvim",
-		tag = "0.1.5",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
-			require("telescope").setup({})
+			local rg = vim.fn.resolve(vim.fn.exepath("rg"))
+			vim.notify("telescope rg: " .. rg, vim.log.levels.DEBUG)
+			require("telescope").setup({
+				defaults = {
+					vimgrep_arguments = rg ~= "" and {
+						rg,
+						"--color=never",
+						"--no-heading",
+						"--with-filename",
+						"--line-number",
+						"--column",
+						"--smart-case",
+					} or nil,
+				},
+			})
 		end,
 	},
 

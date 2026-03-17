@@ -1,5 +1,6 @@
 -- global settings
 vim.g.mapleader = " "
+vim.env.PATH = "/run/current-system/sw/bin:/run/wrappers/bin:" .. vim.env.PATH
 
 vim.opt.updatetime = 300
 vim.opt.number = true
@@ -62,7 +63,8 @@ vim.keymap.set("n", "<C-u>", function()
 	vim.cmd("normal! " .. count .. "kzz")
 end, { silent = true })
 
--- 9 to end of line
+-- 8 to start of line, 9 to end of line
+vim.keymap.set("n", "8", "^")
 vim.keymap.set("n", "9", "$")
 
 -- Keep cursor centred when searching
@@ -81,17 +83,6 @@ vim.keymap.set("n", "<leader>d", function()
 	end
 end, { desc = "Show/hide diagnostic" })
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Diagnostic list" })
-
-vim.api.nvim_create_autocmd("BufEnter", {
-	callback = function()
-		for _, win in ipairs(vim.api.nvim_list_wins()) do
-			local cfg = vim.api.nvim_win_get_config(win)
-			if cfg.relative > "" then
-				pcall(vim.api.nvim_win_close, win, false)
-			end
-		end
-	end,
-})
 
 -- Diagnostic display
 
