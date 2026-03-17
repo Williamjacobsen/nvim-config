@@ -21,6 +21,7 @@ require("lazy").setup({
 					"black",
 					"codelldb",
 					"clang-format",
+					"lua-language-server",
 				},
 				auto_update = false,
 				run_on_start = true,
@@ -130,6 +131,21 @@ require("lazy").setup({
 					capabilities = capabilities,
 					on_attach = on_attach,
 					cmd = { clangd_bin, "--background-index", "--clang-tidy", "--completion-style=detailed" },
+				})
+			end
+
+			local lua_ls_bin = vim.fn.exepath("lua-language-server")
+			if lua_ls_bin ~= "" then
+				lspconfig.lua_ls.setup({
+					capabilities = capabilities,
+					on_attach = on_attach,
+					settings = {
+						Lua = {
+							runtime = { version = "Lua 5.1" },
+							workspace = { checkThirdParty = false },
+							telemetry = { enable = false },
+						},
+					},
 				})
 			end
 		end,

@@ -30,9 +30,17 @@ vim.opt.rtp:prepend(lazypath)
 -- Load plugins (everything is configured inside plugins.lua)
 require("plugins")
 
--- ── Keymaps ───────────────────────────────────────────────────────────────────
+-- Keymaps
 
-vim.keymap.set("n", "<leader>ex", vim.cmd.Ex)
+vim.keymap.set("n", "<leader>ex", function()
+	for _, win in ipairs(vim.api.nvim_list_wins()) do
+		local cfg = vim.api.nvim_win_get_config(win)
+		if cfg.relative > "" then
+			pcall(vim.api.nvim_win_close, win, false)
+		end
+	end
+	vim.cmd.Explore()
+end, { desc = "Netrw" })
 
 -- Telescope
 local builtin = require("telescope.builtin")
@@ -55,10 +63,28 @@ vim.keymap.set("n", "N", "Nzzzv")
 -- Diagnostics
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Prev diagnostic" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
-vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, { desc = "Show diagnostic" })
+vim.keymap.set("n", "<leader>d", function()
+	if vim.g.diagnostic_float_win and vim.api.nvim_win_is_valid(vim.g.diagnostic_float_win) then
+		vim.api.nvim_win_close(vim.g.diagnostic_float_win, false)
+		vim.g.diagnostic_float_win = nil
+	else
+		vim.g.diagnostic_float_win = vim.diagnostic.open_float(nil, { focusable = false })
+	end
+end, { desc = "Show/hide diagnostic" })
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Diagnostic list" })
 
--- ── Diagnostic display ────────────────────────────────────────────────────────
+vim.api.nvim_create_autocmd("BufEnter", {
+	callback = function()
+		for _, win in ipairs(vim.api.nvim_list_wins()) do
+			local cfg = vim.api.nvim_win_get_config(win)
+			if cfg.relative > "" then
+				pcall(vim.api.nvim_win_close, win, false)
+			end
+		end
+	end,
+})
+
+-- Diagnostic display
 
 local sign = function(opts)
 	vim.fn.sign_define(opts.name, { texthl = opts.name, text = opts.text, numhl = "" })
@@ -75,10 +101,4 @@ vim.diagnostic.config({
 	underline = true,
 	severity_sort = true,
 	float = { border = "rounded", source = "always", header = "", prefix = "" },
-})
-
-vim.api.nvim_create_autocmd("CursorHold", {
-	callback = function()
-		vim.diagnostic.open_float(nil, { focusable = false })
-	end,
 })
