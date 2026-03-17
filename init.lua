@@ -67,13 +67,18 @@ end, { silent = true })
 vim.keymap.set("n", "<CR>", function()
 	local line = vim.api.nvim_get_current_line()
 	if line:find("{") and line:find("}") then
-		-- go to }, cut it, open new line below with }, go back up, open middle line
+		local col = vim.api.nvim_win_get_cursor(0)[2]
+		local char = line:sub(col + 1, col + 1)
+		-- if cursor is on }, go back to { first
+		if char == "}" then
+			vim.cmd("normal! F{")
+		end
 		vim.cmd("normal! f}x")
 		vim.cmd("normal! o}")
 		vim.cmd("normal! k")
 		vim.api.nvim_feedkeys("o", "n", false)
 	else
-		vim.cmd("normal! A;\\<Esc>")
+		vim.api.nvim_feedkeys("A;\x1b", "n", false)
 	end
 end, { noremap = true, silent = true })
 
