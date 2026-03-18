@@ -101,19 +101,6 @@ require("lazy").setup({
 				local opts = { buffer = bufnr, noremap = true, silent = true }
 				vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
 				vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-				vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
-				vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help, opts)
-				vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-				vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-				vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-			end
-
-local lspconfig = require("lspconfig")
-
-			local on_attach = function(_, bufnr)
-				local opts = { buffer = bufnr, noremap = true, silent = true }
-				vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-				vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
 				vim.keymap.set("n", "<C-S-k>", vim.lsp.buf.signature_help, opts)
 				vim.keymap.set("i", "<C-S-k>", vim.lsp.buf.signature_help, opts)
 				vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)

@@ -1,6 +1,6 @@
 -- global settings
 vim.g.mapleader = " "
-vim.env.PATH = "/run/current-system/sw/bin:/run/wrappers/bin:" .. vim.env.PATH
+--vim.env.PATH = "/run/current-system/sw/bin:/run/wrappers/bin:" .. vim.env.PATH
 
 vim.opt.updatetime = 300
 vim.opt.number = true
@@ -92,7 +92,7 @@ end, { silent = true })
 -- Smart Enter: split {} if on same line, otherwise append ;
 vim.keymap.set("n", "<CR>", function()
 	local line = vim.api.nvim_get_current_line()
-	if line:find("{") and line:find("}") then
+	if line:find("{%s*}") then
 		local col = vim.api.nvim_win_get_cursor(0)[2]
 		local char = line:sub(col + 1, col + 1)
 		-- if cursor is on }, go back to { first
