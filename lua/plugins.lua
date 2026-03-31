@@ -22,6 +22,8 @@ require("lazy").setup({
 					"codelldb",
 					"clang-format",
 					"lua-language-server",
+					"gopls",
+					"gofumpt",
 				},
 				auto_update = false,
 				run_on_start = true,
@@ -148,6 +150,31 @@ require("lazy").setup({
 					},
 				})
 			end
+
+			local gopls_bin = vim.fn.exepath("gopls")
+			if gopls_bin ~= "" then
+				lspconfig.gopls.setup({
+					capabilities = capabilities,
+					on_attach = on_attach,
+					settings = {
+						gopls = {
+							analyses = {
+								unusedparams = true,
+							},
+							statictest = true,
+						},
+					},
+				})
+			end
+
+			local slint_lsp_bin = vim.fn.exepath("slint-lsp")
+			if slint_lsp_bin ~= "" then
+				lspconfig.slint_lsp.setup({
+					capabilities = capabilities,
+					on_attach = on_attach,
+					cmd = { slint_lsp_bin },
+				})
+			end
 		end,
 	},
 
@@ -239,6 +266,8 @@ require("lazy").setup({
 					"typescript",
 					"rust",
 					"python",
+					"go",
+					"slint",
 				},
 				auto_install = true,
 				highlight = { enable = true },
@@ -252,15 +281,16 @@ require("lazy").setup({
 		"stevearc/conform.nvim",
 		config = function()
 			require("conform").setup({
-				formatters_by_ft = {
-					lua = { "stylua" },
-					rust = { "rustfmt" },
-					json = { "prettier" },
-					jsonc = { "prettier" },
-					python = { "ruff_format", "black" },
-					c = { "clang_format" },
-					cpp = { "clang_format" },
-				},
+			formatters_by_ft = {
+				lua = { "stylua" },
+				rust = { "rustfmt" },
+				json = { "prettier" },
+				jsonc = { "prettier" },
+				python = { "ruff_format", "black" },
+				c = { "clang_format" },
+				cpp = { "clang_format" },
+				go = { "gofumpt" },
+			},
 				format_on_save = { timeout_ms = 500, lsp_fallback = true },
 			})
 		end,
@@ -305,6 +335,12 @@ require("lazy").setup({
 		config = function()
 			require("smear_cursor").setup()
 		end,
+	},
+
+	-- ── Multi Cursor ───────────────────────────────────────────────────────────
+	{
+		"mg979/vim-visual-multi",
+		branch = "master",
 	},
 
 	-- ── Telescope ───────────────────────────────────────────────────────────────
