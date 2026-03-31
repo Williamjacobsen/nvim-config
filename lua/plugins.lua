@@ -343,6 +343,16 @@ require("lazy").setup({
 		branch = "master",
 	},
 
+	-- ── Harpoon ────────────────────────────────────────────────────────────────
+	{
+		"ThePrimeagen/harpoon",
+		branch = "harpoon2",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		config = function()
+			require("harpoon"):setup()
+		end,
+	},
+
 	-- ── Telescope ───────────────────────────────────────────────────────────────
 	{
 		"nvim-telescope/telescope.nvim",
