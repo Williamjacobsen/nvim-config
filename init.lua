@@ -1,6 +1,7 @@
 -- global settings
 vim.g.mapleader = " "
---vim.env.PATH = "/run/current-system/sw/bin:/run/wrappers/bin:" .. vim.env.PATH
+-- NixOS PATH (not needed on Fedora)
+-- vim.env.PATH = "/run/current-system/sw/bin:/run/wrappers/bin:" .. vim.env.PATH
 
 vim.opt.updatetime = 300
 vim.opt.number = true
