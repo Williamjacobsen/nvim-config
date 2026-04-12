@@ -25,6 +25,7 @@ require("lazy").setup({
 					"lua-language-server",
 					"gopls",
 					"gofumpt",
+					"slint-lsp",
 				},
 				auto_update = false,
 				run_on_start = true,
