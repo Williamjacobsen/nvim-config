@@ -15,8 +15,15 @@ require("lazy").setup({
 				ensure_installed = {
 					"rust-analyzer",
 					"stylua",
-					"rustfmt",
 					"prettier",
+					"typescript-language-server",
+					"svelte-language-server",
+					"eslint-lsp",
+					"eslint_d",
+					"html-lsp",
+					"css-lsp",
+					"json-lsp",
+					"emmet-language-server",
 					"pyright",
 					"ruff",
 					"black",
@@ -24,6 +31,7 @@ require("lazy").setup({
 					"clang-format",
 					"lua-language-server",
 					"gopls",
+					"goimports",
 					"gofumpt",
 					"slint-lsp",
 				},
@@ -100,6 +108,15 @@ require("lazy").setup({
 		},
 		config = function()
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
+			local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
+
+			local exepath = function(name)
+				local mason_tool = mason_bin .. "/" .. name
+				if vim.fn.executable(mason_tool) == 1 then
+					return mason_tool
+				end
+				return vim.fn.exepath(name)
+			end
 
 			local on_attach = function(_, bufnr)
 				local opts = { buffer = bufnr, noremap = true, silent = true }
@@ -112,9 +129,7 @@ require("lazy").setup({
 				vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
 			end
 
-			local lspconfig = require("lspconfig")
-
-			lspconfig.pyright.setup({
+			vim.lsp.config("pyright", {
 				capabilities = capabilities,
 				on_attach = on_attach,
 				settings = {
@@ -128,19 +143,21 @@ require("lazy").setup({
 					},
 				},
 			})
+			vim.lsp.enable("pyright")
 
 			local clangd_bin = vim.fn.exepath("clangd")
 			if clangd_bin ~= "" then
-				lspconfig.clangd.setup({
+				vim.lsp.config("clangd", {
 					capabilities = capabilities,
 					on_attach = on_attach,
 					cmd = { clangd_bin, "--background-index", "--clang-tidy", "--completion-style=detailed" },
 				})
+				vim.lsp.enable("clangd")
 			end
 
 			local lua_ls_bin = vim.fn.exepath("lua-language-server")
 			if lua_ls_bin ~= "" then
-				lspconfig.lua_ls.setup({
+				vim.lsp.config("lua_ls", {
 					capabilities = capabilities,
 					on_attach = on_attach,
 					settings = {
@@ -151,31 +168,146 @@ require("lazy").setup({
 						},
 					},
 				})
+				vim.lsp.enable("lua_ls")
 			end
 
-			local gopls_bin = vim.fn.exepath("gopls")
+			local gopls_bin = exepath("gopls")
 			if gopls_bin ~= "" then
-				lspconfig.gopls.setup({
+				vim.lsp.config("gopls", {
 					capabilities = capabilities,
 					on_attach = on_attach,
+					cmd = { gopls_bin },
 					settings = {
 						gopls = {
+							gofumpt = true,
 							analyses = {
+								nilness = true,
+								unusedwrite = true,
 								unusedparams = true,
+								useany = true,
 							},
-							statictest = true,
+							staticcheck = true,
+							hints = {
+								assignVariableTypes = true,
+								compositeLiteralFields = true,
+								compositeLiteralTypes = true,
+								constantValues = true,
+								functionTypeParameters = true,
+								parameterNames = true,
+								rangeVariableTypes = true,
+							},
 						},
 					},
 				})
+				vim.lsp.enable("gopls")
+			end
+
+			local ts_ls_bin = exepath("typescript-language-server")
+			if ts_ls_bin ~= "" then
+				vim.lsp.config("ts_ls", {
+					capabilities = capabilities,
+					on_attach = on_attach,
+					cmd = { ts_ls_bin, "--stdio" },
+					settings = {
+						typescript = {
+							inlayHints = {
+								includeInlayParameterNameHints = "literal",
+								includeInlayFunctionParameterTypeHints = true,
+								includeInlayVariableTypeHints = true,
+								includeInlayPropertyDeclarationTypeHints = true,
+								includeInlayFunctionLikeReturnTypeHints = true,
+							},
+						},
+						javascript = {
+							inlayHints = {
+								includeInlayParameterNameHints = "literal",
+								includeInlayFunctionParameterTypeHints = true,
+								includeInlayVariableTypeHints = true,
+								includeInlayPropertyDeclarationTypeHints = true,
+								includeInlayFunctionLikeReturnTypeHints = true,
+							},
+						},
+					},
+				})
+				vim.lsp.enable("ts_ls")
+			end
+
+			local svelte_bin = exepath("svelteserver")
+			if svelte_bin ~= "" then
+				vim.lsp.config("svelte", {
+					capabilities = capabilities,
+					on_attach = on_attach,
+					cmd = { svelte_bin, "--stdio" },
+				})
+				vim.lsp.enable("svelte")
+			end
+
+			local eslint_bin = exepath("vscode-eslint-language-server")
+			if eslint_bin ~= "" then
+				vim.lsp.config("eslint", {
+					capabilities = capabilities,
+					on_attach = on_attach,
+					cmd = { eslint_bin, "--stdio" },
+				})
+				vim.lsp.enable("eslint")
+			end
+
+			local html_bin = exepath("vscode-html-language-server")
+			if html_bin ~= "" then
+				vim.lsp.config("html", {
+					capabilities = capabilities,
+					on_attach = on_attach,
+					cmd = { html_bin, "--stdio" },
+				})
+				vim.lsp.enable("html")
+			end
+
+			local css_bin = exepath("vscode-css-language-server")
+			if css_bin ~= "" then
+				vim.lsp.config("cssls", {
+					capabilities = capabilities,
+					on_attach = on_attach,
+					cmd = { css_bin, "--stdio" },
+				})
+				vim.lsp.enable("cssls")
+			end
+
+			local json_bin = exepath("vscode-json-language-server")
+			if json_bin ~= "" then
+				vim.lsp.config("jsonls", {
+					capabilities = capabilities,
+					on_attach = on_attach,
+					cmd = { json_bin, "--stdio" },
+				})
+				vim.lsp.enable("jsonls")
+			end
+
+			local emmet_bin = exepath("emmet-language-server")
+			if emmet_bin ~= "" then
+				vim.lsp.config("emmet_language_server", {
+					capabilities = capabilities,
+					on_attach = on_attach,
+					cmd = { emmet_bin, "--stdio" },
+					filetypes = {
+						"html",
+						"css",
+						"javascriptreact",
+						"typescriptreact",
+						"vue",
+						"svelte",
+					},
+				})
+				vim.lsp.enable("emmet_language_server")
 			end
 
 			local slint_lsp_bin = vim.fn.exepath("slint-lsp")
 			if slint_lsp_bin ~= "" then
-				lspconfig.slint_lsp.setup({
+				vim.lsp.config("slint_lsp", {
 					capabilities = capabilities,
 					on_attach = on_attach,
 					cmd = { slint_lsp_bin },
 				})
+				vim.lsp.enable("slint_lsp")
 			end
 		end,
 	},
@@ -254,26 +386,19 @@ require("lazy").setup({
 		build = ":TSUpdate",
 		lazy = false,
 		config = function()
-			require("nvim-treesitter").setup({
-				ensure_installed = {
-					"c",
-					"cpp",
-					"lua",
-					"vim",
-					"vimdoc",
-					"query",
-					"markdown",
-					"markdown_inline",
-					"javascript",
-					"typescript",
-					"rust",
-					"python",
-					"go",
-					"slint",
-				},
-				auto_install = true,
-				highlight = { enable = true },
-				indent = { enable = true },
+			-- nvim-treesitter main branch: install parsers explicitly and let Neovim
+			-- provide highlighting through vim.treesitter.start().
+			local parsers = {
+				"c", "cpp", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline",
+				"javascript", "typescript", "tsx", "svelte", "html", "css", "json", "yaml",
+				"rust", "python", "go", "gomod", "gosum", "gowork", "slint",
+			}
+			require("nvim-treesitter").install(parsers)
+			vim.api.nvim_create_autocmd("FileType", {
+				pattern = "*",
+				callback = function()
+					pcall(vim.treesitter.start)
+				end,
 			})
 		end,
 	},
@@ -288,10 +413,20 @@ require("lazy").setup({
 				rust = { "rustfmt" },
 				json = { "prettier" },
 				jsonc = { "prettier" },
+				javascript = { "prettier" },
+				javascriptreact = { "prettier" },
+				typescript = { "prettier" },
+				typescriptreact = { "prettier" },
+				svelte = { "prettier" },
+				html = { "prettier" },
+				css = { "prettier" },
+				scss = { "prettier" },
+				yaml = { "prettier" },
+				markdown = { "prettier" },
 				python = { "ruff_format", "black" },
 				c = { "clang_format" },
 				cpp = { "clang_format" },
-				go = { "gofumpt" },
+				go = { "goimports", "gofumpt" },
 			},
 				format_on_save = { timeout_ms = 500, lsp_fallback = true },
 			})
@@ -304,7 +439,14 @@ require("lazy").setup({
 		event = { "BufReadPre", "BufNewFile" },
 		config = function()
 			local lint = require("lint")
-			lint.linters_by_ft = { python = { "ruff" } }
+			lint.linters_by_ft = {
+				python = { "ruff" },
+				javascript = { "eslint_d" },
+				javascriptreact = { "eslint_d" },
+				typescript = { "eslint_d" },
+				typescriptreact = { "eslint_d" },
+				svelte = { "eslint_d" },
+			}
 			vim.api.nvim_create_autocmd({ "BufWritePost", "InsertLeave" }, {
 				callback = function()
 					lint.try_lint()
@@ -332,12 +474,7 @@ require("lazy").setup({
 	},
 
 	-- ── Smear Cursor ───────────────────────────────────────────────────────────
-	{
-		"sphamba/smear-cursor.nvim",
-		config = function()
-			require("smear_cursor").setup()
-		end,
-	},
+	-- Disabled: animated cursor redraws can make terminal Neovim feel delayed.
 
 	-- ── Multi Cursor ───────────────────────────────────────────────────────────
 	{
