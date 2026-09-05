@@ -46,17 +46,32 @@ end, { desc = "Netrw" })
 
 -- Harpoon
 local harpoon = require("harpoon")
-vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end, { desc = "Harpoon add file" })
-vim.keymap.set("n", "<leader>h", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = "Harpoon menu" })
-vim.keymap.set("n", "<leader>1", function() harpoon:list():select(1) end, { desc = "Harpoon 1" })
-vim.keymap.set("n", "<leader>2", function() harpoon:list():select(2) end, { desc = "Harpoon 2" })
-vim.keymap.set("n", "<leader>3", function() harpoon:list():select(3) end, { desc = "Harpoon 3" })
-vim.keymap.set("n", "<leader>4", function() harpoon:list():select(4) end, { desc = "Harpoon 4" })
+vim.keymap.set("n", "<leader>a", function()
+	harpoon:list():add()
+end, { desc = "Harpoon add file" })
+vim.keymap.set("n", "<leader>h", function()
+	harpoon.ui:toggle_quick_menu(harpoon:list())
+end, { desc = "Harpoon menu" })
+vim.keymap.set("n", "<leader>1", function()
+	harpoon:list():select(1)
+end, { desc = "Harpoon 1" })
+vim.keymap.set("n", "<leader>2", function()
+	harpoon:list():select(2)
+end, { desc = "Harpoon 2" })
+vim.keymap.set("n", "<leader>3", function()
+	harpoon:list():select(3)
+end, { desc = "Harpoon 3" })
+vim.keymap.set("n", "<leader>4", function()
+	harpoon:list():select(4)
+end, { desc = "Harpoon 4" })
 
 -- Telescope
 local builtin = require("telescope.builtin")
 vim.keymap.set("n", "<leader>ff", builtin.find_files, {})
 vim.keymap.set("n", "<leader>fg", builtin.live_grep, {})
+vim.keymap.set("n", "<leader>fb", builtin.current_buffer_fuzzy_find, {
+	desc = "Find in current buffer",
+})
 
 -- Hop  (use <leader> prefix so f/t stay as normal Vim motions)
 vim.keymap.set("n", "<leader>hw", "<cmd>HopWord<cr>", { desc = "Hop word" })
